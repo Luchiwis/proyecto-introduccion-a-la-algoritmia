@@ -15,7 +15,7 @@ def contarRepeticiones(elemento, lista):
     repes = 0
     iter = 0
     while iter < len(lista):
-        if lista[iter] == x:
+        if lista[iter] == elemento:
             repes += 1
         iter += 1
     return repes

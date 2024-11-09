@@ -2,7 +2,7 @@ import random
 
 import utils
 
-TIPOS_DE_EVENTOS = ["CASAMIENTO", "15", "CUMPLE", "BAUTISMO", "OTRO"]
+TIPOS_DE_EVENTOS = ["CASAMIENTO", "QUINCE", "CUMPLE", "BAUTISMO", "OTRO"]
 MAXIMO_EVENTOS_POR_FECHA = 10
 id_utilizadas = []
 fechasUtilizadas = []
@@ -43,9 +43,9 @@ def diaRandom(mes, anio):
 
     return fecha[0]
 
-def generarDatos(mes, anio):
-    """
-    esta funcion devuelve un dato con el siguiente formato:
+
+def generarEventos(mes, anio):
+    """esta funcion devuelve un dato con el siguiente formato:
     [
         [id, dia, mes, año, tipo_de_evento, cantidad_fotos],
         ...
@@ -84,13 +84,89 @@ def generarDatos(mes, anio):
     for i in range(cantidadEventos):
         cantidadDeFotos = random.randint(300, 5000)
         tipoDeEvento = utils.choice(TIPOS_DE_EVENTOS)
-        dia = diaValido()
+        dia = diaValido(mes, anio)
         identificador = idRandom()
-        
-        evento = [identificador, dia, mes, anio, tipo_de_evento, cantidad_fotos]
+
+        evento = [identificador, dia, mes, anio, tipoDeEvento, cantidadDeFotos]
         eventos.append(evento)
-        
 
     return eventos
 
 
+def costo(evento):
+    costo_fotos = evento[5] * 50  # cantidad de fotos * $50
+    match evento[4]:
+        case "CASAMIENTO":
+            return costo_fotos + 50000
+        case "QUINCE":
+            return costo_fotos + 60000
+        case "CUMPLE":
+            return costo_fotos + 35000
+        case "BAUTISMO":
+            return costo_fotos + 38000
+        case _:
+            return costo_fotos + 25000
+
+
+def facturar(evento):
+    """
+    Esta funcion devuelve cuanto debe facturarse el evento
+    """
+    cantidad_fotos = evento[5]
+    match evento[4]:
+        case "CASAMIENTO":
+            costo_base = 50000
+            if cantidad_fotos <= 500:
+                return costo_base + (750 * cantidad_fotos)
+            elif 500 < cantidad_fotos < 1000:
+                return costo_base + (650 * cantidad_fotos)
+            elif cantidad_fotos > 1000:
+                return costo_base + (600 * cantidad_fotos)
+        case "QUINCE":
+            costo_base = 60000
+            if cantidad_fotos <= 500:
+                return costo_base + (850 * cantidad_fotos)
+            elif 500 < cantidad_fotos < 1000:
+                return costo_base + (750 * cantidad_fotos)
+            elif cantidad_fotos > 1000:
+                return costo_base + (700 * cantidad_fotos)
+        case "CUMPLE":
+            costo_base = 35000
+            if cantidad_fotos <= 500:
+                return costo_base + (650 * cantidad_fotos)
+            elif 500 < cantidad_fotos:
+                return costo_base + (550 * cantidad_fotos)
+        case "BAUTISMO":
+            costo_base = 38000
+            if cantidad_fotos <= 500:
+                return costo_base + (750 * cantidad_fotos)
+            elif 500 < cantidad_fotos:
+                return costo_base + (650 * cantidad_fotos)
+        case _:
+            costo_base = 25000
+            if cantidad_fotos <= 500:
+                return costo_base + (1000 * cantidad_fotos)
+            elif 500 < cantidad_fotos < 1000:
+                return costo_base + (900 * cantidad_fotos)
+            elif cantidad_fotos > 1000:
+                return costo_base + (800 * cantidad_fotos)
+
+
+def promedioDeFotos(eventos):
+    totalFotos = 0
+    for evento in eventos:
+        totalFotos += evento[5]
+    return totalFotos // len(eventos)
+
+
+if __name__ == "__main__":
+    from pprint import pprint
+
+    eventos = generarEventos(12, 1994)
+    promedio = promedioDeFotos(eventos)
+    pprint(eventos)
+    print(facturar(eventos[0]))
+    print(costo(eventos[0]))
+    
+    print(promedio)
+    
