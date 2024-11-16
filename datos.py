@@ -15,16 +15,8 @@ def idRandom():
     return id
 
 
-def anioBisiesto(anio):
-    # determina si un año es bisiesto
-    if (anio % 4 == 0 and anio % 100 != 0) or anio % 400 == 0:
-        return True
-    else:
-        return False
-
-
-def diaValido(mes, anio):
-    bis = anioBisiesto(anio)
+def generarDiaValido(mes, anio):
+    bis = utils.anioBisiesto(anio)
     maxDias = 0
     if mes == 2 and bis:
         maxDias = 29
@@ -37,9 +29,9 @@ def diaValido(mes, anio):
 
 def diaRandom(mes, anio):
     # chequear si el dia no se repite 5 veces
-    fecha = [diaValido(mes, anio), mes, anio]
+    fecha = [generarDiaValido(mes, anio), mes, anio]
     while utils.contarRepeticiones(fecha, fechasUtilizadas) >= MAXIMO_EVENTOS_POR_FECHA:
-        fecha = [diaValido(mes, anio), mes, anio]
+        fecha = [generarDiaValido(mes, anio), mes, anio]
     fechasUtilizadas.append(fecha)
 
     return fecha[0]
@@ -71,21 +63,16 @@ def generarEventos(mes, anio):
     - 1000 <= ID <= 9999
     - Fechas validas
 
-    Pasos:
-    1- Generar una matriz de n filas siendo n = numero random entre 40 y 250 y 4 columnas [id, fecha, tipo_de_evento, cantidad_fotos]
-    a partir del mes y el año que toma la funcion
-    2- Generar los datos a
-
     """
 
     cantidadEventos = random.randint(40, 250)
 
     eventos = []
 
-    for i in range(cantidadEventos):
+    for _ in range(cantidadEventos):
         cantidadDeFotos = random.randint(300, 5000)
         tipoDeEvento = utils.choice(TIPOS_DE_EVENTOS)
-        dia = diaValido(mes, anio)
+        dia = generarDiaValido(mes, anio)
         identificador = idRandom()
 
         evento = [identificador, dia, mes, anio, tipoDeEvento, cantidadDeFotos]
@@ -159,19 +146,3 @@ def promedioDeFotos(eventos):
         totalFotos += evento[5]
     return totalFotos // len(eventos)
 
-
-
-
-
-
-# testing
-if __name__ == "__main__":
-    from pprint import pprint
-
-    eventos = generarEventos(12, 1994)
-    promedio = promedioDeFotos(eventos)
-    pprint(eventos)
-    print(facturar(eventos[0]))
-    print(costo(eventos[0]))
-
-    print(promedio)
