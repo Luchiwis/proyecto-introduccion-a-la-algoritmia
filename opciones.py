@@ -7,8 +7,10 @@ Archivo con las funciones solicitadas en el documento
 -Detalle del día.
 """
 
-import utils
 import datos
+import fechas
+import tablas
+import operaciones
 
 
 def totalesMes(eventos, mes, anio):
@@ -19,20 +21,20 @@ def totalesMes(eventos, mes, anio):
     promedioFotosPorEvento = 0
     for evento in eventos:
         totalEventos += 1
-        totalFact = totalFact + datos.facturar(evento)
+        totalFact = totalFact + operaciones.facturar(evento)
         totalFotos = totalFotos + evento[5]
-        totalCosto = totalCosto + datos.costo(evento)
+        totalCosto = totalCosto + operaciones.costo(evento)
     promedioFotosPorEvento = totalFotos / totalEventos
 
     #resultado
     print()
     print("*******************************************************")
-    print(f"Mes: {utils.queMes(mes)} del año {anio}")
-    print("Total Facturado: $", totalFact)
-    print("Total Eventos Realizados: ", totalEventos)
-    print("Total Fotos Realizadas: ", totalFotos)
-    print("Total Costo Fotos Realizadas: ", totalCosto)
-    print("Promedio de fotos por evento es: ", promedioFotosPorEvento)
+    print(f"Mes: {fechas.queMes(mes)} del año {anio}")
+    print("Total Facturado: ${totalFact}")
+    print("Total Eventos Realizados: {totalEventos}")
+    print("Total Fotos Realizadas: {totalFotos}")
+    print("Total Costo Fotos Realizadas: ${totalCosto}")
+    print("Promedio de fotos por evento es: {promedioFotosPorEvento}")
     print("*******************************************************")
     print()
 
@@ -57,9 +59,9 @@ def totalPorTipoDeEvento(eventos, mes, anio):
     for evento in eventos:
         if evento[4] == eve:
             totalEventos += 1
-            totalFact = totalFact + datos.facturar(evento)
+            totalFact = totalFact + operaciones.facturar(evento)
             totalFotos = totalFotos + evento[5]
-            totalCosto = totalCosto + datos.costo(evento)
+            totalCosto = totalCosto + operaciones.costo(evento)
     if totalEventos != 0:
         promedioFotosPorEvento = totalFotos / totalEventos
     else:
@@ -68,13 +70,13 @@ def totalPorTipoDeEvento(eventos, mes, anio):
     #resultado
     print()
     print("*******************************************************")
-    print(f"Mes: {utils.queMes(mes)} del año {anio}")
-    print("Tipo de Evento: ", eve)
-    print("Total facturado: $", totalFact)
-    print("Total Eventos Realizados: ", totalEventos)
-    print("Total Fotos Realizadas: ", totalFotos)
-    print("Total Costo Fotos Realizadas: ", totalCosto)
-    print("Promedio de Fotos por Evento: ", promedioFotosPorEvento)
+    print(f"Mes: {fechas.queMes(mes)} del año {anio}")
+    print(f"Tipo de Evento: {eve}")
+    print(f"Total facturado: ${totalFact}")
+    print(f"Total Eventos Realizados: {totalEventos}")
+    print(f"Total Fotos Realizadas: {totalFotos}")
+    print(f"Total Costo Fotos Realizadas: ${totalCosto}")
+    print(f"Promedio de Fotos por Evento: {promedioFotosPorEvento}")
     print("*******************************************************")
     print()
 
@@ -92,25 +94,26 @@ def detallePorEvento(eventos, mes, anio):
         total_facturado = 0
         for evento in eventos:
             if evento[4] == tipo:
-                total_facturado += datos.facturar(evento)
+                total_facturado += operaciones.facturar(evento)
                 total_fotos += evento[5]
                 total_eventos_del_mes += 1
         tabla.append([tipo, total_eventos_del_mes, total_fotos, total_facturado])
 
     # resultado
-    print("Mes: ", utils.queMes(mes), anio)
-    tabla = utils.ordenarTabla(tabla, 3) #ordenar por total facturado
-    utils.mostrarTabla(tabla)
+    print("Mes: ", fechas.queMes(mes), anio)
+    tabla = tablas.ordenarTabla(tabla, 3) #ordenar por total facturado
+    tabla = tablas.aplicarSignoPesos(tabla, 3)
+    tablas.mostrarTabla(tabla)
 
 
 def detallePorDia(eventos, mes, anio):
     """
-    Esta funcion no utiliza utils.ordenarTabla(). 
+    Esta funcion no utiliza tablas.ordenarTabla(). 
     Tiene su propio ordenamiento ya que lo que se comparan son fechas
     """
     
     tabla = []
-    if mes == 2 and utils.anioBisiesto(anio):
+    if mes == 2 and fechas.anioBisiesto(anio):
         diasMes = 29
     else:
         dias = [None, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
@@ -125,32 +128,28 @@ def detallePorDia(eventos, mes, anio):
         dia = evento[1] - 1
         tabla[dia][1] += 1
         tabla[dia][2] += evento[5]
-        tabla[dia][3] += datos.facturar(evento)
+        tabla[dia][3] += operaciones.facturar(evento)
 
     # resultado
-    print("Mes:", utils.queMes(mes), anio)
+    print("Mes:", fechas.queMes(mes), anio)
     tabla = [["Día", "Total eventos", "Total fotos", "Total facturado"]] + tabla
-    # print(tabla)
-    utils.mostrarTabla(tabla)
+    tabla = tablas.aplicarSignoPesos(tabla, 3)
+    tablas.mostrarTabla(tabla)
 
 
 def detalleDelDia(eventos, mes, anio):
     dia = int(input("ingrese un dia valido: "))
-    while not utils.validarFecha(dia, mes, anio):
+    while not fechas.validarFecha(dia, mes, anio):
         print(f"{dia}/{mes}/{anio} es una fecha invalida")
         dia = int(input("ingrese un dia valido: "))
 
     tabla = [["ID EVENTO", "Tipo de evento", "Total fotos", "Total facturado"]]
     for evento in eventos:
         if evento[1] == dia:
-            tabla.append([evento[0], evento[4], evento[5], datos.facturar(evento)])
+            tabla.append([evento[0], evento[4], evento[5], operaciones.facturar(evento)])
 
     #resultado
-    print(f"Dia elegido: {dia} de {utils.queMes(mes)} del año {anio}")
-    tabla = utils.ordenarTabla(tabla, 0) #ordenar por total facturado
-    utils.mostrarTabla(tabla)
-
-if __name__ == "__main__":
-    d = datos.generarEventos(1, 2020)
-    print(d)
-    detallePorDia(d, 1, 2020)
+    print(f"Dia elegido: {dia} de {fechas.queMes(mes)} del año {anio}")
+    tabla = tablas.ordenarTabla(tabla, 3) #ordenar por total facturado
+    tabla = tablas.aplicarSignoPesos(tabla, 3)
+    tablas.mostrarTabla(tabla)
