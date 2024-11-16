@@ -26,6 +26,35 @@ def choice(lista):
         return lista[random.randint(0, len(lista) - 1)]
 
 
-# Testing
-if __name__ == "__main__":
-    print(choice([1]))
+def imprimirMenu():
+    print()
+    print("********************************************")
+    print("Debe elegir una opcion, solo numeros enteros")
+    print("1 - Totales mes")
+    print("2 - Total por tipo de evento")
+    print("3 - Detalle por evento")
+    print("4 - Detalle por mes")
+    print("5 - Detalle del día")
+    print("6 - SALIR")
+    print("********************************************")
+    print()
+
+
+def queMes(mes):
+    meses = [
+        None,
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+    ]
+    cual = meses[mes]
+    return cual

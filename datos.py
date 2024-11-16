@@ -16,6 +16,7 @@ def idRandom():
 
 
 def anioBisiesto(anio):
+    # determina si un año es bisiesto
     if (anio % 4 == 0 and anio % 100 != 0) or anio % 400 == 0:
         return True
     else:
@@ -32,7 +33,7 @@ def diaValido(mes, anio):
         maxDias = dias[mes]
     devolver = random.randint(1, maxDias)
     return devolver
-
+    
 
 def diaRandom(mes, anio):
     # chequear si el dia no se repite 5 veces
@@ -159,6 +160,11 @@ def promedioDeFotos(eventos):
     return totalFotos // len(eventos)
 
 
+
+
+
+
+# testing
 if __name__ == "__main__":
     from pprint import pprint
 
@@ -167,6 +173,5 @@ if __name__ == "__main__":
     pprint(eventos)
     print(facturar(eventos[0]))
     print(costo(eventos[0]))
-    
+
     print(promedio)
-    
