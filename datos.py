@@ -75,7 +75,7 @@ def generarEventos(mes, anio):
     for _ in range(cantidadEventos):
         cantidadDeFotos = random.randint(300, 5000)
         tipoDeEvento = utils.choice(TIPOS_DE_EVENTOS)
-        dia = generarDiaValido(mes, anio)
+        dia = diaRandom(mes, anio)
         identificador = generarIDRandom()
 
         evento = [identificador, dia, mes, anio, tipoDeEvento, cantidadDeFotos]
